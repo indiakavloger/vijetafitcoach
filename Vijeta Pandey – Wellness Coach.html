@@ -30,7 +30,7 @@
       --primary: #059669;
       --primary-hover: #047857;
       --primary-light: #ecfdf5;
-      --primary-glow: rgba(5, 150, 105, 0.25);
+      --primary-glow: rgba(5, 150, 105, 0.28);
       
       --secondary: #ff6b4a;
       --secondary-hover: #e05333;
@@ -68,6 +68,7 @@
 
       --transition-fast: 0.2s ease;
       --transition-normal: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-spring: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     [data-theme="dark"] {
@@ -125,10 +126,12 @@
       color: inherit;
     }
 
+    /* Responsive Images optimization */
     img {
       max-width: 100%;
       height: auto;
       display: block;
+      object-fit: cover;
     }
 
     .container {
@@ -136,6 +139,60 @@
       max-width: 1240px;
       margin: 0 auto;
       padding: 0 24px;
+    }
+
+    /* ==========================================================================
+       ANIMATIONS & SCROLL REVEALS
+       ========================================================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stagger-1 { transition-delay: 0.1s; }
+    .stagger-2 { transition-delay: 0.2s; }
+    .stagger-3 { transition-delay: 0.3s; }
+    .stagger-4 { transition-delay: 0.4s; }
+
+    /* Shimmer effect on CTA */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .btn-shimmer {
+      background: linear-gradient(90deg, var(--primary) 0%, #10b981 50%, var(--primary) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 4s infinite linear;
+    }
+
+    /* Floating bob animation */
+    @keyframes floatSlow {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(1deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    .float-card {
+      animation: floatSlow 4.5s ease-in-out infinite;
+    }
+
+    .float-card-reverse {
+      animation: floatSlow 5s ease-in-out infinite reverse;
+    }
+
+    /* Pulse Glow */
+    @keyframes pulseGlowRing {
+      0% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.5); }
+      70% { box-shadow: 0 0 0 15px rgba(5, 150, 105, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0); }
     }
 
     /* Utility Badges & Tags */
@@ -185,6 +242,12 @@
       transition: all var(--transition-normal);
       text-align: center;
       white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
     }
 
     .btn-primary {
@@ -239,14 +302,14 @@
 
     /* Section Styling */
     section {
-      padding: 90px 0;
+      padding: 85px 0;
       position: relative;
     }
 
     .section-header {
       text-align: center;
-      max-width: 680px;
-      margin: 0 auto 56px;
+      max-width: 700px;
+      margin: 0 auto 52px;
     }
 
     .section-header .badge {
@@ -285,7 +348,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-color);
@@ -293,7 +356,7 @@
     }
 
     [data-theme="dark"] .navbar {
-      background: rgba(19, 27, 38, 0.85);
+      background: rgba(19, 27, 38, 0.88);
     }
 
     .navbar-container {
@@ -348,7 +411,7 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 24px;
+      gap: 22px;
       list-style: none;
     }
 
@@ -367,7 +430,7 @@
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .theme-toggle-btn {
@@ -382,11 +445,13 @@
       justify-content: center;
       cursor: pointer;
       transition: all var(--transition-fast);
+      flex-shrink: 0;
     }
 
     .theme-toggle-btn:hover {
       background: var(--primary-light);
       color: var(--primary);
+      transform: rotate(15deg);
     }
 
     .mobile-menu-btn {
@@ -400,6 +465,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     /* Mobile Drawer */
@@ -412,9 +478,9 @@
       bottom: 0;
       background: var(--bg-surface);
       z-index: 99;
-      padding: 30px 24px;
+      padding: 24px 20px;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
       overflow-y: auto;
       border-top: 1px solid var(--border-color);
       transform: translateY(-100%);
@@ -429,7 +495,7 @@
     }
 
     .mobile-nav-link {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 600;
       padding: 10px 0;
       border-bottom: 1px solid var(--border-subtle);
@@ -439,7 +505,7 @@
        HERO SECTION
        ========================================================================== */
     .hero-section {
-      padding: 60px 0 80px;
+      padding: 60px 0 75px;
       overflow: hidden;
       position: relative;
     }
@@ -471,7 +537,7 @@
     .hero-grid {
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
-      gap: 50px;
+      gap: 48px;
       align-items: center;
       position: relative;
       z-index: 1;
@@ -480,11 +546,11 @@
     .hero-content {
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 20px;
     }
 
     .hero-headline {
-      font-size: clamp(2.5rem, 5.2vw, 3.85rem);
+      font-size: clamp(2.4rem, 5.2vw, 3.85rem);
       font-weight: 900;
       line-height: 1.1;
       letter-spacing: -0.03em;
@@ -496,14 +562,8 @@
       -webkit-text-fill-color: transparent;
     }
 
-    .gradient-orange {
-      background: linear-gradient(135deg, #ff6b4a 0%, #f59e0b 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
     .hero-subhead {
-      font-size: 1.18rem;
+      font-size: 1.15rem;
       color: var(--text-muted);
       max-width: 560px;
       line-height: 1.65;
@@ -512,17 +572,17 @@
     .hero-cta-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 14px;
       align-items: center;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .hero-key-points {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
-      margin-top: 10px;
-      padding-top: 20px;
+      margin-top: 8px;
+      padding-top: 18px;
       border-top: 1px solid var(--border-subtle);
     }
 
@@ -552,12 +612,14 @@
       position: relative;
       display: flex;
       justify-content: center;
+      width: 100%;
     }
 
     .hero-image-frame {
       position: relative;
       width: 100%;
-      max-width: 440px;
+      max-width: 420px;
+      aspect-ratio: 3 / 4;
       border-radius: var(--radius-xl);
       overflow: hidden;
       box-shadow: var(--shadow-xl);
@@ -572,14 +634,14 @@
 
     .hero-image-frame img {
       width: 100%;
-      height: 520px;
+      height: 100%;
       object-fit: cover;
-      object-position: top center;
-      transition: transform 0.5s ease;
+      object-position: center top;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .hero-image-frame:hover img {
-      transform: scale(1.02);
+      transform: scale(1.03);
     }
 
     /* Floating Badges on Hero */
@@ -594,23 +656,16 @@
       align-items: center;
       gap: 12px;
       z-index: 2;
-      animation: floatBadge 4s ease-in-out infinite alternate;
     }
 
     .floating-card-left {
-      top: 30px;
+      top: 25px;
       left: -20px;
     }
 
     .floating-card-right {
-      bottom: 40px;
+      bottom: 35px;
       right: -20px;
-      animation-delay: -2s;
-    }
-
-    @keyframes floatBadge {
-      0% { transform: translateY(0px); }
-      100% { transform: translateY(-8px); }
     }
 
     .floating-card-icon {
@@ -621,6 +676,7 @@
       align-items: center;
       justify-content: center;
       font-size: 1.25rem;
+      flex-shrink: 0;
     }
 
     .floating-card-title {
@@ -680,33 +736,37 @@
     .about-grid {
       display: grid;
       grid-template-columns: 0.9fr 1.1fr;
-      gap: 56px;
+      gap: 52px;
       align-items: center;
     }
 
     .about-image-stack {
       position: relative;
+      width: 100%;
     }
 
     .about-img-main {
       width: 100%;
+      max-width: 460px;
+      aspect-ratio: 4 / 5;
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow-lg);
       border: 3px solid var(--border-color);
       object-fit: cover;
-      height: 480px;
+      object-position: center top;
+      margin: 0 auto;
     }
 
     .about-quote-box {
       position: absolute;
-      bottom: -24px;
-      right: -20px;
+      bottom: -20px;
+      right: 0;
       background: var(--bg-surface-elevated);
-      padding: 20px 24px;
+      padding: 18px 22px;
       border-radius: var(--radius-lg);
       border: 1px solid var(--border-color);
       box-shadow: var(--shadow-xl);
-      max-width: 300px;
+      max-width: 290px;
     }
 
     .about-quote-text {
@@ -751,6 +811,12 @@
       gap: 14px;
       align-items: flex-start;
       border: 1px solid var(--border-subtle);
+      transition: transform var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .about-feature-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
     }
 
     .about-feature-icon {
@@ -777,7 +843,7 @@
       background: linear-gradient(135deg, #064e3b 0%, #065f46 60%, #047857 100%);
       color: #ffffff;
       border-radius: var(--radius-xl);
-      padding: 48px;
+      padding: 44px;
       box-shadow: var(--shadow-xl);
       position: relative;
       overflow: hidden;
@@ -794,7 +860,7 @@
 
     .spotlight-info h3 {
       color: #ffffff;
-      font-size: 2.2rem;
+      font-size: clamp(1.8rem, 3.2vw, 2.3rem);
       margin-bottom: 14px;
     }
 
@@ -802,6 +868,7 @@
       color: #d1fae5;
       font-size: 1.05rem;
       margin-bottom: 24px;
+      line-height: 1.6;
     }
 
     .spotlight-highlights {
@@ -825,19 +892,23 @@
       border-radius: var(--radius-lg);
       overflow: hidden;
       box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-      border: 4px solid rgba(255, 255, 255, 0.2);
+      border: 4px solid rgba(255, 255, 255, 0.25);
+      aspect-ratio: 16 / 11;
+      width: 100%;
+      background: #000;
     }
 
     .spotlight-media img {
       width: 100%;
-      height: 400px;
+      height: 100%;
       object-fit: cover;
+      object-position: center;
     }
 
     .spotlight-tag {
       position: absolute;
-      top: 16px;
-      right: 16px;
+      top: 14px;
+      right: 14px;
       background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(8px);
       padding: 6px 14px;
@@ -865,14 +936,43 @@
       border: 1px solid var(--border-color);
     }
 
+    /* Slider Mode Switcher */
+    .slider-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .slider-tab-btn {
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .slider-tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
     .ba-slider-wrapper {
       position: relative;
       width: 100%;
-      height: 480px;
+      height: clamp(320px, 50vw, 480px);
       overflow: hidden;
       border-radius: var(--radius-lg);
       user-select: none;
       -webkit-user-select: none;
+      background: #0f172a;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
     }
 
     .ba-img {
@@ -882,6 +982,8 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center top;
+      pointer-events: none;
     }
 
     .ba-img-after {
@@ -899,8 +1001,10 @@
     }
 
     .ba-img-before-wrapper .ba-img {
-      width: 820px; /* Synchronized to wrapper width */
-      max-width: none;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
     }
 
     .ba-handle {
@@ -913,7 +1017,7 @@
       z-index: 3;
       transform: translateX(-50%);
       cursor: ew-resize;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      box-shadow: 0 0 12px rgba(0,0,0,0.6);
     }
 
     .ba-handle-btn {
@@ -928,8 +1032,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.35);
       color: var(--primary);
+      animation: pulseGlowRing 2.5s infinite;
     }
 
     .ba-label {
@@ -941,17 +1046,18 @@
       font-weight: 700;
       z-index: 4;
       pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
     .ba-label-before {
       left: 16px;
-      background: rgba(220, 38, 38, 0.85);
+      background: rgba(220, 38, 38, 0.88);
       color: #ffffff;
     }
 
     .ba-label-after {
       right: 16px;
-      background: rgba(5, 150, 105, 0.85);
+      background: rgba(5, 150, 105, 0.88);
       color: #ffffff;
     }
 
@@ -960,7 +1066,9 @@
       justify-content: space-between;
       align-items: center;
       margin-top: 18px;
-      padding: 0 8px;
+      padding: 0 4px;
+      flex-wrap: wrap;
+      gap: 14px;
     }
 
     /* ==========================================================================
@@ -975,7 +1083,7 @@
     }
 
     .filter-btn {
-      padding: 10px 22px;
+      padding: 10px 20px;
       border-radius: var(--radius-full);
       background: var(--bg-surface);
       border: 1.5px solid var(--border-color);
@@ -1010,7 +1118,7 @@
       border: 1px solid var(--border-color);
       overflow: hidden;
       box-shadow: var(--shadow-sm);
-      transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+      transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
       display: flex;
       flex-direction: column;
       cursor: pointer;
@@ -1025,27 +1133,55 @@
     .review-img-wrap {
       position: relative;
       width: 100%;
-      height: 320px;
-      background: var(--bg-subtle);
+      aspect-ratio: 4 / 5;
+      background: #0f172a;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .review-img-wrap img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.4s ease;
+      object-position: center top;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .review-card:hover .review-img-wrap img {
-      transform: scale(1.04);
+      transform: scale(1.05);
+    }
+
+    .zoom-hint-pill {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.725rem;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .review-card:hover .zoom-hint-pill {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .review-metric-pill {
       position: absolute;
       bottom: 12px;
       left: 12px;
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.88);
       backdrop-filter: blur(6px);
       color: #ffffff;
       padding: 6px 12px;
@@ -1058,11 +1194,11 @@
     }
 
     .review-metric-pill.pill-loss {
-      background: rgba(5, 150, 105, 0.9);
+      background: rgba(5, 150, 105, 0.92);
     }
 
     .review-metric-pill.pill-gain {
-      background: rgba(217, 119, 6, 0.9);
+      background: rgba(217, 119, 6, 0.92);
     }
 
     .review-body {
@@ -1114,7 +1250,7 @@
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
     }
 
     .lightbox-modal.active {
@@ -1123,8 +1259,11 @@
 
     .lightbox-container {
       position: relative;
-      max-width: 700px;
+      max-width: 680px;
       width: 100%;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
       background: var(--bg-surface);
       border-radius: var(--radius-xl);
       overflow: hidden;
@@ -1139,12 +1278,12 @@
 
     .lightbox-close-btn {
       position: absolute;
-      top: 16px;
-      right: 16px;
+      top: 14px;
+      right: 14px;
       width: 38px;
       height: 38px;
       border-radius: 50%;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.65);
       color: #fff;
       border: none;
       cursor: pointer;
@@ -1152,17 +1291,33 @@
       align-items: center;
       justify-content: center;
       z-index: 10;
+      transition: background 0.2s;
+    }
+
+    .lightbox-close-btn:hover {
+      background: rgba(220, 38, 38, 0.85);
+    }
+
+    .lightbox-img-wrap {
+      width: 100%;
+      max-height: 60vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
 
     .lightbox-img {
       width: 100%;
-      max-height: 520px;
+      height: 100%;
+      max-height: 60vh;
       object-fit: contain;
-      background: #000;
     }
 
     .lightbox-info {
-      padding: 24px;
+      padding: 22px 24px;
+      overflow-y: auto;
     }
 
     /* ==========================================================================
@@ -1346,20 +1501,20 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
-      padding: 44px;
+      padding: 40px;
       box-shadow: var(--shadow-xl);
     }
 
     .calc-grid {
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
-      gap: 48px;
+      gap: 44px;
     }
 
     .calc-inputs {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
 
     .calc-unit-toggle {
@@ -1368,7 +1523,7 @@
       padding: 4px;
       border-radius: var(--radius-full);
       gap: 4px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       align-self: flex-start;
     }
 
@@ -1381,6 +1536,7 @@
       font-weight: 600;
       cursor: pointer;
       color: var(--text-muted);
+      transition: all var(--transition-fast);
     }
 
     .calc-unit-btn.active {
@@ -1417,7 +1573,7 @@
       font-family: var(--font-body);
       font-size: 1rem;
       outline: none;
-      transition: border-color var(--transition-fast);
+      transition: border-color var(--transition-fast), background var(--transition-fast);
     }
 
     .input-control:focus {
@@ -1429,7 +1585,7 @@
     .calc-results {
       background: var(--bg-subtle);
       border-radius: var(--radius-lg);
-      padding: 32px;
+      padding: 30px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -1438,12 +1594,12 @@
     }
 
     .bmi-gauge-wrap {
-      margin: 10px 0 20px;
+      margin: 10px 0 16px;
     }
 
     .bmi-score-number {
       font-family: var(--font-heading);
-      font-size: 4rem;
+      font-size: 3.8rem;
       font-weight: 900;
       line-height: 1;
       color: var(--primary);
@@ -1466,7 +1622,7 @@
       border-radius: var(--radius-full);
       background: linear-gradient(90deg, #3b82f6 0%, #10b981 30%, #f59e0b 70%, #ef4444 100%);
       position: relative;
-      margin: 20px 0 8px;
+      margin: 18px 0 8px;
     }
 
     .bmi-scale-indicator {
@@ -1494,7 +1650,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
-      margin: 24px 0;
+      margin: 22px 0;
     }
 
     .calc-stat-box {
@@ -1552,6 +1708,11 @@
       font-size: 1.5rem;
       font-weight: 800;
       box-shadow: 0 8px 20px var(--primary-glow);
+      transition: transform var(--transition-fast);
+    }
+
+    .step-item:hover .step-badge {
+      transform: scale(1.1);
     }
 
     .step-title {
@@ -1577,16 +1738,18 @@
       position: relative;
       border-radius: var(--radius-lg);
       overflow: hidden;
-      height: 280px;
+      aspect-ratio: 4 / 3;
       box-shadow: var(--shadow-md);
       cursor: pointer;
+      background: #000;
     }
 
     .event-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
+      object-position: center;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .event-card:hover img {
@@ -1598,7 +1761,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 20px 16px 16px;
+      padding: 20px 16px 14px;
       background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.85) 100%);
       color: #ffffff;
     }
@@ -1756,7 +1919,7 @@
     .contact-info-panel {
       background: linear-gradient(135deg, #059669 0%, #064e3b 100%);
       color: #ffffff;
-      padding: 48px;
+      padding: 44px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -1764,20 +1927,20 @@
 
     .contact-info-top h3 {
       color: #ffffff;
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       margin-bottom: 12px;
     }
 
     .contact-info-top p {
       color: #a7f3d0;
       font-size: 1.05rem;
-      margin-bottom: 32px;
+      margin-bottom: 30px;
     }
 
     .contact-direct-items {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
 
     .contact-direct-item {
@@ -1809,10 +1972,16 @@
       font-weight: 700;
       font-size: 1.05rem;
       color: #ffffff;
+      transition: opacity var(--transition-fast);
+    }
+
+    .contact-direct-text a:hover {
+      opacity: 0.85;
+      text-decoration: underline;
     }
 
     .contact-form-panel {
-      padding: 48px;
+      padding: 44px;
     }
 
     .booking-form {
@@ -1827,14 +1996,14 @@
     .site-footer {
       background: var(--bg-card);
       border-top: 1px solid var(--border-color);
-      padding: 70px 0 30px;
+      padding: 65px 0 30px;
     }
 
     .footer-grid {
       display: grid;
       grid-template-columns: 1.4fr 0.8fr 0.8fr 1fr;
-      gap: 40px;
-      margin-bottom: 50px;
+      gap: 36px;
+      margin-bottom: 45px;
     }
 
     .footer-col-desc {
@@ -1847,7 +2016,7 @@
     .footer-heading {
       font-size: 1.05rem;
       font-weight: 700;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       color: var(--text-main);
     }
 
@@ -1872,7 +2041,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-top: 26px;
+      padding-top: 24px;
       border-top: 1px solid var(--border-subtle);
       font-size: 0.85rem;
       color: var(--text-light);
@@ -1945,7 +2114,7 @@
     }
 
     /* ==========================================================================
-       RESPONSIVE BREAKPOINTS
+       RESPONSIVE OPTIMIZATIONS (PHONE & PC)
        ========================================================================== */
     @media (max-width: 1024px) {
       .hero-grid {
@@ -1962,7 +2131,7 @@
         justify-content: center;
       }
       .hero-key-points {
-        max-width: 500px;
+        max-width: 520px;
         margin: 0 auto;
       }
       .hero-media-wrapper {
@@ -1987,14 +2156,55 @@
     }
 
     @media (max-width: 768px) {
+      section {
+        padding: 56px 0;
+      }
+      .container {
+        padding: 0 16px;
+      }
       .nav-links, .nav-actions .btn-whatsapp {
         display: none;
       }
       .mobile-menu-btn {
         display: flex;
       }
-      .pillars-grid, .steps-grid, .events-grid, .stats-grid {
+      .hero-headline {
+        font-size: clamp(2rem, 8vw, 2.6rem);
+      }
+      .hero-image-frame {
+        max-width: 320px;
+      }
+      .floating-card {
+        display: none; /* Hide floating badges on narrow mobile to keep coach photo clean */
+      }
+      .hero-key-points {
         grid-template-columns: 1fr;
+        text-align: left;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .about-img-main {
+        max-width: 320px;
+      }
+      .about-quote-box {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        margin: -20px auto 0;
+        max-width: 90%;
+      }
+      .about-features-list {
+        grid-template-columns: 1fr;
+      }
+      .pillars-grid, .steps-grid, .events-grid {
+        grid-template-columns: 1fr;
+      }
+      .gallery-grid {
+        grid-template-columns: 1fr;
+        max-width: 360px;
+        margin: 0 auto;
       }
       .input-row-2 {
         grid-template-columns: 1fr;
@@ -2002,18 +2212,11 @@
       .footer-grid {
         grid-template-columns: 1fr;
       }
-      .floating-card-left {
-        left: 0;
-        top: 10px;
-      }
-      .floating-card-right {
-        right: 0;
-        bottom: 10px;
-      }
       .fab-whatsapp {
         bottom: 74px;
-        right: 16px;
+        right: 14px;
         padding: 10px 16px;
+        font-size: 0.875rem;
       }
       .mobile-quick-bar {
         display: block;
@@ -2022,10 +2225,15 @@
         padding-bottom: 70px;
       }
       .spotlight-banner, .calc-card, .contact-form-panel, .contact-info-panel, .breathe-card {
-        padding: 24px;
+        padding: 24px 18px;
+        border-radius: var(--radius-lg);
       }
       .ba-slider-wrapper {
-        height: 340px;
+        height: 320px;
+      }
+      .calc-stats-boxes {
+        grid-template-columns: 1fr;
+        gap: 8px;
       }
     }
   </style>
@@ -2063,7 +2271,7 @@
       </nav>
 
       <div class="nav-actions">
-        <a href="https://www.instagram.com/vijeta0080/" target="_blank" rel="noopener" class="theme-toggle-btn" aria-label="Visit Instagram Profile" title="Follow on Instagram @vijeta0080">
+        <a href="https://www.instagram.com/vijeta0080/" target="_blank" rel="noopener" class="theme-toggle-btn" aria-label="Visit Instagram Profile" title="Follow on Instagram @vijeta0080" style="color: #e1306c;">
           <i data-lucide="instagram"></i>
         </a>
         <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
@@ -2113,7 +2321,7 @@
       <div class="hero-bg-glow-2"></div>
 
       <div class="container hero-grid">
-        <div class="hero-content">
+        <div class="hero-content reveal">
           <div class="badge badge-primary">
             <i data-lucide="award"></i> #1 Certified Wellness & Nutrition Coach
           </div>
@@ -2128,7 +2336,7 @@
           </p>
 
           <div class="hero-cta-group">
-            <a href="#contact" class="btn btn-primary">
+            <a href="#contact" class="btn btn-primary btn-shimmer">
               <i data-lucide="calendar"></i> Book Free Consultation
             </a>
             <a href="#spotlight" class="btn btn-outline">
@@ -2156,8 +2364,8 @@
           </div>
         </div>
 
-        <div class="hero-media-wrapper">
-          <div class="floating-card floating-card-left">
+        <div class="hero-media-wrapper reveal stagger-2">
+          <div class="floating-card floating-card-left float-card">
             <div class="floating-card-icon" style="background: #ecfdf5; color: #059669;">🥗</div>
             <div>
               <div class="floating-card-title">Custom Nutrition</div>
@@ -2169,7 +2377,7 @@
             <img src="ceo/WhatsApp%20Image%202026-10-09%20at%208.27.11%20PM.jpeg" alt="Coach Vijeta Pandey - FitVijeta Mentor">
           </div>
 
-          <div class="floating-card floating-card-right">
+          <div class="floating-card floating-card-right float-card-reverse">
             <div class="floating-card-icon" style="background: #fff7ed; color: #ea580c;">⚡</div>
             <div>
               <div class="floating-card-title">1-on-1 Mentorship</div>
@@ -2180,26 +2388,26 @@
       </div>
     </section>
 
-    <!-- STATS STRIP -->
-    <div class="stats-strip">
+    <!-- STATS STRIP WITH COUNTER ANIMATION -->
+    <div class="stats-strip reveal">
       <div class="container stats-grid">
         <div class="stat-item">
-          <span class="stat-value">500+</span>
+          <span class="stat-value" data-counter="500" data-suffix="+">0</span>
           <span class="stat-label">Clients Guided</span>
           <span class="stat-desc">Across India & Overseas NRI Families</span>
         </div>
         <div class="stat-item">
-          <span class="stat-value">100%</span>
+          <span class="stat-value" data-counter="100" data-suffix="%">0</span>
           <span class="stat-label">Online & Flexible</span>
           <span class="stat-desc">Follow from the comfort of home</span>
         </div>
         <div class="stat-item">
-          <span class="stat-value">0 kg</span>
+          <span class="stat-value" data-counter="0" data-suffix=" kg">0</span>
           <span class="stat-label">Rebound Weight</span>
           <span class="stat-desc">Sustainable lifelong healthy habits</span>
         </div>
         <div class="stat-item">
-          <span class="stat-value">5.0 ★</span>
+          <span class="stat-value" data-counter="5.0" data-suffix=" ★" data-decimals="1">0</span>
           <span class="stat-label">Client Satisfaction</span>
           <span class="stat-desc">Genuine love & life-changing reviews</span>
         </div>
@@ -2207,14 +2415,14 @@
     </div>
 
     <!-- ==========================================================================
-         ABOUT COACH VIJETA SECTION
+         MEET YOUR MENTOR / ABOUT SECTION
          ========================================================================== -->
     <section id="about">
       <div class="container about-grid">
-        <div class="about-image-stack">
+        <div class="about-image-stack reveal">
           <img src="ceo/WhatsApp%20Image%202026-10-09%20at%208.27.08%20PM.jpeg" alt="Vijeta Pandey - Wellness Coach" class="about-img-main">
           
-          <div class="about-quote-box">
+          <div class="about-quote-box float-card">
             <p class="about-quote-text">
               "When you nourish your body with the right balance, weight loss isn't a struggle — it becomes your most natural state."
             </p>
@@ -2222,7 +2430,7 @@
           </div>
         </div>
 
-        <div class="about-content">
+        <div class="about-content reveal stagger-2">
           <div class="badge badge-primary">Meet Your Mentor</div>
           <h2 class="section-title">From Busy Homemaker to Transforming Hundreds of Lives</h2>
           
@@ -2277,7 +2485,7 @@
          ========================================================================== -->
     <section id="spotlight">
       <div class="container">
-        <div class="spotlight-banner">
+        <div class="spotlight-banner reveal">
           <div class="spotlight-grid">
             <div class="spotlight-info">
               <div class="badge badge-gold" style="background: rgba(255,255,255,0.2); color: #ffffff; border-color: rgba(255,255,255,0.4);">
@@ -2318,27 +2526,32 @@
     </section>
 
     <!-- ==========================================================================
-         INTERACTIVE BEFORE/AFTER SLIDER
-         ========================================================================== */
-    -->
+         INTERACTIVE BEFORE/AFTER SLIDER (DUAL MODE)
+         ========================================================================== -->
     <section class="slider-section">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header reveal">
           <div class="badge badge-primary">Interactive Comparison</div>
           <h2 class="section-title">Slide To Reveal The Transformation</h2>
           <p class="section-desc">Drag the interactive slider handle left and right to inspect the real inch loss and body recomposition.</p>
         </div>
 
-        <div class="slider-container">
+        <div class="slider-container reveal stagger-2">
+          <!-- Slider Mode Switcher -->
+          <div class="slider-tabs">
+            <button class="slider-tab-btn active" id="sliderTabClient" onclick="switchSliderMode('client')">Client Saree Recomposition (-21 KG)</button>
+            <button class="slider-tab-btn" id="sliderTabCoach" onclick="switchSliderMode('coach')">Coach Vijeta's Journey</button>
+          </div>
+
           <div class="ba-slider-wrapper" id="baSlider">
             <!-- After Image (Background) -->
-            <img src="rev/WhatsApp%20Image%202026-08-31%20at%2010.30.22%20AM%20(1).jpeg" alt="After Transformation" class="ba-img ba-img-after">
-            <span class="ba-label ba-label-after">AFTER (-21 KG)</span>
+            <img src="rev/slider_after.jpg" alt="After Transformation" class="ba-img ba-img-after" id="baImgAfter">
+            <span class="ba-label ba-label-after" id="baLabelAfter">AFTER (-21 KG)</span>
 
             <!-- Before Image (Clipped Foreground) -->
             <div class="ba-img-before-wrapper" id="baBeforeWrap">
-              <img src="rev/WhatsApp%20Image%202026-08-31%20at%2010.30.22%20AM%20(1).jpeg" alt="Before Transformation" class="ba-img" id="baBeforeImg">
-              <span class="ba-label ba-label-before">BEFORE</span>
+              <img src="rev/slider_before.jpg" alt="Before Transformation" class="ba-img" id="baBeforeImg">
+              <span class="ba-label ba-label-before" id="baLabelBefore">BEFORE</span>
             </div>
 
             <!-- Handle -->
@@ -2351,8 +2564,8 @@
 
           <div class="slider-details">
             <div>
-              <strong style="font-size: 1.1rem;">Client Saree Recomposition</strong>
-              <div style="font-size: 0.85rem; color: var(--text-muted);">-21 KG Fat Loss in 7 Months with customized home nutrition</div>
+              <strong style="font-size: 1.1rem;" id="sliderTitleText">Client Saree Recomposition</strong>
+              <div style="font-size: 0.85rem; color: var(--text-muted);" id="sliderSubText">-21 KG Fat Loss in 7 Months with customized home nutrition</div>
             </div>
             <a href="https://wa.me/917050474701?text=Hi%20Coach%20Vijeta%2C%20I%20loved%20the%2021%20KG%20transformation%20on%20your%20site%20and%20want%20similar%20guidance!" target="_blank" rel="noopener" class="btn btn-whatsapp btn-sm">
               I Want Results Like This →
@@ -2367,14 +2580,14 @@
          ========================================================================== -->
     <section id="transformations">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header reveal">
           <div class="badge badge-primary">Success Stories</div>
           <h2 class="section-title">Real Results. Real Transformations.</h2>
           <p class="section-desc">Explore inspiring journeys from our clients who achieved sustainable fat loss, lean muscle gain, and vibrant health through personalized 1-on-1 coaching.</p>
         </div>
 
         <!-- Filter Tabs -->
-        <div class="filter-tabs">
+        <div class="filter-tabs reveal">
           <button class="filter-btn active" data-filter="all">All Results (12)</button>
           <button class="filter-btn" data-filter="loss">Weight & Fat Loss</button>
           <button class="filter-btn" data-filter="gain">Healthy Weight Gain</button>
@@ -2386,9 +2599,10 @@
         <div class="gallery-grid" id="reviewsGallery">
           
           <!-- Card 1: -21 KG -->
-          <div class="review-card" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.30.22%20AM%20(1).jpeg', '21 kg Fat Loss in 7 Months', 'Incredible saree transformation achieved with balanced Indian home nutrition, protein optimization, and 20-min daily routines.')">
+          <div class="review-card reveal" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.30.22%20AM%20(1).jpeg', '21 kg Fat Loss in 7 Months', 'Incredible saree transformation achieved with balanced Indian home nutrition, protein optimization, and 20-min daily routines.')">
             <div class="review-img-wrap">
               <img src="rev/WhatsApp%20Image%202026-08-31%20at%2010.30.22%20AM%20(1).jpeg" alt="21 kg Fat Loss" loading="lazy">
+              <span class="zoom-hint-pill"><i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> View Full</span>
               <span class="review-metric-pill pill-loss"><i data-lucide="trending-down"></i> -21 KG Lost</span>
             </div>
             <div class="review-body">
@@ -2404,9 +2618,10 @@
           </div>
 
           <!-- Card 2: -27 KG -->
-          <div class="review-card" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.30.23%20AM.jpeg', '27 kg Weight Loss Life Changing', 'Massive lifestyle overhaul with noticeable inch loss across waist and hips with structured daily check-ins.')">
+          <div class="review-card reveal stagger-1" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.30.23%20AM.jpeg', '27 kg Weight Loss Life Changing', 'Massive lifestyle overhaul with noticeable inch loss across waist and hips with structured daily check-ins.')">
             <div class="review-img-wrap">
               <img src="rev/WhatsApp%20Image%202026-08-31%20at%2010.30.23%20AM.jpeg" alt="27 kg Weight Loss" loading="lazy">
+              <span class="zoom-hint-pill"><i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> View Full</span>
               <span class="review-metric-pill pill-loss"><i data-lucide="trending-down"></i> -27 KG Lost</span>
             </div>
             <div class="review-body">
@@ -2422,9 +2637,10 @@
           </div>
 
           <!-- Card 3: +13 KG Gained -->
-          <div class="review-card" data-category="gain" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.30.22%20AM.jpeg', '57 kg to 70 kg Lean Muscle Gain', 'Healthy caloric surplus diet, gut health enhancement, and strength building for previously underweight client.')">
+          <div class="review-card reveal stagger-2" data-category="gain" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.30.22%20AM.jpeg', '57 kg to 70 kg Lean Muscle Gain', 'Healthy caloric surplus diet, gut health enhancement, and strength building for previously underweight client.')">
             <div class="review-img-wrap">
               <img src="rev/WhatsApp%20Image%202026-08-31%20at%2010.30.22%20AM.jpeg" alt="Healthy Weight Gain" loading="lazy">
+              <span class="zoom-hint-pill"><i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> View Full</span>
               <span class="review-metric-pill pill-gain"><i data-lucide="trending-up"></i> +13 KG Muscle</span>
             </div>
             <div class="review-body">
@@ -2440,9 +2656,10 @@
           </div>
 
           <!-- Card 4: -13 KG Lost -->
-          <div class="review-card" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.30.21%20AM.jpeg', '13 kg Fat Loss & Belly Cut', 'Significant visceral belly fat cut and stamina improvement without stepping foot into a gym.')">
+          <div class="review-card reveal stagger-3" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.30.21%20AM.jpeg', '13 kg Fat Loss & Belly Cut', 'Significant visceral belly fat cut and stamina improvement without stepping foot into a gym.')">
             <div class="review-img-wrap">
               <img src="rev/WhatsApp%20Image%202026-08-31%20at%2010.30.21%20AM.jpeg" alt="13 kg Belly Fat Cut" loading="lazy">
+              <span class="zoom-hint-pill"><i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> View Full</span>
               <span class="review-metric-pill pill-loss"><i data-lucide="trending-down"></i> -13 KG Lost</span>
             </div>
             <div class="review-body">
@@ -2458,9 +2675,10 @@
           </div>
 
           <!-- Card 5: -20 KG Lost -->
-          <div class="review-card" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.30.24%20AM.jpeg', '110 kg to 90 kg (-20 KG Lost)', 'Continuing on mission to ideal weight with sustainable habits, portion control, and direct WhatsApp checks.')">
+          <div class="review-card reveal" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.30.24%20AM.jpeg', '110 kg to 90 kg (-20 KG Lost)', 'Continuing on mission to ideal weight with sustainable habits, portion control, and direct WhatsApp checks.')">
             <div class="review-img-wrap">
               <img src="rev/WhatsApp%20Image%202026-08-31%20at%2010.30.24%20AM.jpeg" alt="20 kg Lost" loading="lazy">
+              <span class="zoom-hint-pill"><i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> View Full</span>
               <span class="review-metric-pill pill-loss"><i data-lucide="trending-down"></i> -20 KG Lost</span>
             </div>
             <div class="review-body">
@@ -2476,9 +2694,10 @@
           </div>
 
           <!-- Card 6: Couple Transformation -->
-          <div class="review-card" data-category="couple" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.32.38%20AM.jpeg', 'Fat to Fit Couple Transformation', 'Inspiring couple health turnaround from overweight struggles to living energized, healthy, and happy together.')">
+          <div class="review-card reveal stagger-1" data-category="couple" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.32.38%20AM.jpeg', 'Fat to Fit Couple Transformation', 'Inspiring couple health turnaround from overweight struggles to living energized, healthy, and happy together.')">
             <div class="review-img-wrap">
               <img src="rev/WhatsApp%20Image%202026-08-31%20at%2010.32.38%20AM.jpeg" alt="Couple Transformation" loading="lazy">
+              <span class="zoom-hint-pill"><i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> View Full</span>
               <span class="review-metric-pill pill-loss"><i data-lucide="heart"></i> Couple Goal</span>
             </div>
             <div class="review-body">
@@ -2494,9 +2713,10 @@
           </div>
 
           <!-- Card 7: -9 KG Tone -->
-          <div class="review-card" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-21%20at%209.38.35%20PM.jpeg', '69.8 kg to 60.8 kg (-9 KG)', 'Complete midsection slimming, energy spike, and improved daily mood with tailored nutrition.')">
+          <div class="review-card reveal stagger-2" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-21%20at%209.38.35%20PM.jpeg', '69.8 kg to 60.8 kg (-9 KG)', 'Complete midsection slimming, energy spike, and improved daily mood with tailored nutrition.')">
             <div class="review-img-wrap">
               <img src="rev/WhatsApp%20Image%202026-08-21%20at%209.38.35%20PM.jpeg" alt="9 kg Fat Loss" loading="lazy">
+              <span class="zoom-hint-pill"><i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> View Full</span>
               <span class="review-metric-pill pill-loss"><i data-lucide="trending-down"></i> -9 KG Lost</span>
             </div>
             <div class="review-body">
@@ -2512,9 +2732,10 @@
           </div>
 
           <!-- Card 8: Inch Loss & Saree Glow -->
-          <div class="review-card" data-category="tone" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-20%20at%209.16.22%20PM.jpeg', 'Facial Glow & Waist Inch Loss', 'Noticeable reduction in double chin, toned arms, vibrant skin radiance, and renewed confidence.')">
+          <div class="review-card reveal stagger-3" data-category="tone" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-20%20at%209.16.22%20PM.jpeg', 'Facial Glow & Waist Inch Loss', 'Noticeable reduction in double chin, toned arms, vibrant skin radiance, and renewed confidence.')">
             <div class="review-img-wrap">
               <img src="rev/WhatsApp%20Image%202026-08-20%20at%209.16.22%20PM.jpeg" alt="Inch Loss Saree Glow" loading="lazy">
+              <span class="zoom-hint-pill"><i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> View Full</span>
               <span class="review-metric-pill pill-loss"><i data-lucide="sparkles"></i> Inch Loss & Glow</span>
             </div>
             <div class="review-body">
@@ -2530,9 +2751,10 @@
           </div>
 
           <!-- Card 9: May to Oct Transformation -->
-          <div class="review-card" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-21%20at%209.46.24%20PM.jpeg', 'May to Oct Belly Fat Cut', 'Dramatic belly reduction and waist slimming over 5 months of steady, easy home coaching.')">
+          <div class="review-card reveal" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-21%20at%209.46.24%20PM.jpeg', 'May to Oct Belly Fat Cut', 'Dramatic belly reduction and waist slimming over 5 months of steady, easy home coaching.')">
             <div class="review-img-wrap">
               <img src="rev/WhatsApp%20Image%202026-08-21%20at%209.46.24%20PM.jpeg" alt="May to Oct 2024" loading="lazy">
+              <span class="zoom-hint-pill"><i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> View Full</span>
               <span class="review-metric-pill pill-loss"><i data-lucide="trending-down"></i> Belly Fat Trim</span>
             </div>
             <div class="review-body">
@@ -2548,9 +2770,10 @@
           </div>
 
           <!-- Card 10: Posture & Confidence -->
-          <div class="review-card" data-category="tone" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-21%20at%209.46.25%20PM.jpeg', 'Body Recomposition & Energy', 'Active daily living, boosted stamina, and healthy lifestyle habit integration.')">
+          <div class="review-card reveal stagger-1" data-category="tone" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-21%20at%209.46.25%20PM.jpeg', 'Body Recomposition & Energy', 'Active daily living, boosted stamina, and healthy lifestyle habit integration.')">
             <div class="review-img-wrap">
               <img src="rev/WhatsApp%20Image%202026-08-21%20at%209.46.25%20PM.jpeg" alt="Body Recomposition" loading="lazy">
+              <span class="zoom-hint-pill"><i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> View Full</span>
               <span class="review-metric-pill pill-loss"><i data-lucide="zap"></i> Active & Fit</span>
             </div>
             <div class="review-body">
@@ -2565,10 +2788,11 @@
             </div>
           </div>
 
-          <!-- Card 11: Total Body Recomposition -->
-          <div class="review-card" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.30.24%20AM%20(1).jpeg', 'Yellow to Red Saree Transformation', 'Complete body overhaul, graceful posture, and high energy from home.')">
+          <!-- Card 11: Total Silhouette Reshaping -->
+          <div class="review-card reveal stagger-2" data-category="loss" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.30.24%20AM%20(1).jpeg', 'Yellow to Red Saree Transformation', 'Complete body overhaul, graceful posture, and high energy from home.')">
             <div class="review-img-wrap">
               <img src="rev/WhatsApp%20Image%202026-08-31%20at%2010.30.24%20AM%20(1).jpeg" alt="Saree Transformation" loading="lazy">
+              <span class="zoom-hint-pill"><i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> View Full</span>
               <span class="review-metric-pill pill-loss"><i data-lucide="trending-down"></i> Total Makeover</span>
             </div>
             <div class="review-body">
@@ -2584,9 +2808,10 @@
           </div>
 
           <!-- Card 12: 8 KG 1 Month Breakthrough -->
-          <div class="review-card" data-category="tone" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.31.20%20AM.jpeg', '8 kg Lost in 1 Month Breakthrough', 'The original breakthrough routine: healthy meal portions, natural hydration, and consistent daily movement.')">
+          <div class="review-card reveal stagger-3" data-category="tone" onclick="openLightbox('rev/WhatsApp%20Image%202026-08-31%20at%2010.31.20%20AM.jpeg', '8 kg Lost in 1 Month Breakthrough', 'The original breakthrough routine: healthy meal portions, natural hydration, and consistent daily movement.')">
             <div class="review-img-wrap">
               <img src="rev/WhatsApp%20Image%202026-08-31%20at%2010.31.20%20AM.jpeg" alt="8 kg in 1 Month" loading="lazy">
+              <span class="zoom-hint-pill"><i data-lucide="maximize-2" style="width: 12px; height: 12px;"></i> View Full</span>
               <span class="review-metric-pill pill-loss"><i data-lucide="zap"></i> 8 KG in 30 Days</span>
             </div>
             <div class="review-body">
@@ -2609,7 +2834,9 @@
     <div id="lightboxModal" class="lightbox-modal" onclick="closeLightbox(event)">
       <div class="lightbox-container" onclick="event.stopPropagation()">
         <button class="lightbox-close-btn" onclick="closeLightbox()">&times;</button>
-        <img id="lightboxImg" src="" alt="Transformation Preview" class="lightbox-img">
+        <div class="lightbox-img-wrap">
+          <img id="lightboxImg" src="" alt="Transformation Preview" class="lightbox-img">
+        </div>
         <div class="lightbox-info">
           <h3 id="lightboxTitle" style="font-size: 1.35rem; margin-bottom: 8px;"></h3>
           <p id="lightboxDesc" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 18px;"></p>
@@ -2626,7 +2853,7 @@
          ========================================================================== -->
     <section id="pillars" style="background: var(--bg-subtle);">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header reveal">
           <div class="badge badge-primary">The System</div>
           <h2 class="section-title">The 4 Pillars of Total Wellness</h2>
           <p class="section-desc">Our proven, holistic framework engineered to create lifelong lifestyle transformations without extreme gym sessions or starvation.</p>
@@ -2634,7 +2861,7 @@
 
         <div class="pillars-grid">
           <!-- Pillar 1 -->
-          <div class="pillar-card">
+          <div class="pillar-card reveal">
             <span class="pillar-number">Pillar 01</span>
             <div class="pillar-icon-box">🥗</div>
             <h3 class="pillar-title">Balanced Home Nutrition (EAT)</h3>
@@ -2645,7 +2872,7 @@
           </div>
 
           <!-- Pillar 2 -->
-          <div class="pillar-card">
+          <div class="pillar-card reveal stagger-1">
             <span class="pillar-number">Pillar 02</span>
             <div class="pillar-icon-box">🏃‍♀️</div>
             <h3 class="pillar-title">Guided Home Workouts (MOVE)</h3>
@@ -2656,7 +2883,7 @@
           </div>
 
           <!-- Pillar 3 -->
-          <div class="pillar-card">
+          <div class="pillar-card reveal stagger-2">
             <span class="pillar-number">Pillar 03</span>
             <div class="pillar-icon-box">📱</div>
             <h3 class="pillar-title">Daily WhatsApp Tracking (TRACK)</h3>
@@ -2667,7 +2894,7 @@
           </div>
 
           <!-- Pillar 4 -->
-          <div class="pillar-card">
+          <div class="pillar-card reveal stagger-3">
             <span class="pillar-number">Pillar 04</span>
             <div class="pillar-icon-box">🤝</div>
             <h3 class="pillar-title">1-on-1 Mentorship (SUPPORT)</h3>
@@ -2685,7 +2912,7 @@
          ========================================================================== -->
     <section id="programs">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header reveal">
           <div class="badge badge-primary">What We Offer</div>
           <h2 class="section-title">Personalized Programs for Every Goal</h2>
           <p class="section-desc">Whether you want to shed stubborn fat, build healthy weight, or fix low energy, we craft a tailored roadmap around your daily lifestyle.</p>
@@ -2693,7 +2920,7 @@
 
         <div class="programs-grid">
           <!-- Plan 1 -->
-          <div class="program-card">
+          <div class="program-card reveal">
             <div class="program-header">
               <div class="badge badge-primary" style="margin-bottom: 10px;">30-Day Starter</div>
               <h3 class="program-title">Kickstart Fat Loss</h3>
@@ -2718,7 +2945,7 @@
           </div>
 
           <!-- Plan 2: FEATURED -->
-          <div class="program-card featured">
+          <div class="program-card featured reveal stagger-1">
             <div class="popular-ribbon">Most Popular Choice</div>
             <div class="program-header">
               <div class="badge badge-secondary" style="margin-bottom: 10px;">90-Day Transformation</div>
@@ -2738,13 +2965,13 @@
               <li class="program-feature-item"><i data-lucide="check-circle-2"></i> Lifelong Healthy Habit & Maintenance Roadmap</li>
             </ul>
 
-            <a href="https://wa.me/917050474701?text=Hi%20Coach%20Vijeta%2C%20I%20want%20to%20enroll%20in%20the%2090-Day%20Total%20Body%20Recomposition%20Plan!" target="_blank" rel="noopener" class="btn btn-primary" style="width: 100%;">
+            <a href="https://wa.me/917050474701?text=Hi%20Coach%20Vijeta%2C%20I%20want%20to%20enroll%20in%20the%2090-Day%20Total%20Body%20Recomposition%20Plan!" target="_blank" rel="noopener" class="btn btn-primary btn-shimmer" style="width: 100%;">
               Enroll in 90-Day Transformation
             </a>
           </div>
 
           <!-- Plan 3: VIP 1-on-1 -->
-          <div class="program-card">
+          <div class="program-card reveal stagger-2">
             <div class="program-header">
               <div class="badge badge-gold" style="margin-bottom: 10px;">VIP Mentorship</div>
               <h3 class="program-title">1-on-1 VIP Coaching</h3>
@@ -2776,13 +3003,13 @@
          ========================================================================== -->
     <section id="calculator" class="calculator-section">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header reveal">
           <div class="badge badge-primary">Interactive Health Tool</div>
           <h2 class="section-title">Calculate Your Body Mass Index (BMI)</h2>
           <p class="section-desc">Discover your BMI score, ideal healthy weight range, daily hydration target, and get a tailored wellness roadmap instantly.</p>
         </div>
 
-        <div class="calc-card">
+        <div class="calc-card reveal stagger-1">
           <div class="calc-grid">
             
             <!-- Inputs Column -->
@@ -2918,32 +3145,32 @@
          ========================================================================== -->
     <section>
       <div class="container">
-        <div class="section-header">
+        <div class="section-header reveal">
           <div class="badge badge-primary">How It Works</div>
           <h2 class="section-title">Simple 4-Step Coaching From Home</h2>
           <p class="section-desc">No complicated machine routines or stressful clinic visits. Simple, caring guidance delivered right to your smartphone.</p>
         </div>
 
         <div class="steps-grid">
-          <div class="step-item">
+          <div class="step-item reveal">
             <div class="step-badge">1</div>
             <h3 class="step-title">Say Hello</h3>
             <p class="step-desc">Connect on WhatsApp or fill out the free consultation form to speak directly with Coach Vijeta.</p>
           </div>
 
-          <div class="step-item">
+          <div class="step-item reveal stagger-1">
             <div class="step-badge">2</div>
             <h3 class="step-title">Discovery Call</h3>
             <p class="step-desc">We assess your routine, current weight, dietary preferences, food habits, and health history.</p>
           </div>
 
-          <div class="step-item">
+          <div class="step-item reveal stagger-2">
             <div class="step-badge">3</div>
             <h3 class="step-title">Custom Home Plan</h3>
             <p class="step-desc">Receive your personalized Indian home diet chart and easy 20-min daily exercise routines.</p>
           </div>
 
-          <div class="step-item">
+          <div class="step-item reveal stagger-3">
             <div class="step-badge">4</div>
             <h3 class="step-title">Transform & Thrive</h3>
             <p class="step-desc">Daily WhatsApp meal checks, progress reviews, mindset guidance, and milestone celebrations.</p>
@@ -2957,14 +3184,14 @@
          ========================================================================== -->
     <section id="events" style="background: var(--bg-subtle);">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header reveal">
           <div class="badge badge-primary">Life & Events</div>
           <h2 class="section-title">Coaching Life, Leadership & National Summits</h2>
           <p class="section-desc">A glimpse into our coaching workshops, wellness galas, national leadership summits, and healthy community celebrations.</p>
         </div>
 
         <div class="events-grid">
-          <div class="event-card">
+          <div class="event-card reveal">
             <img src="ceo/WhatsApp%20Image%202026-10-09%20at%208.27.09%20PM%20(2).jpeg" alt="Wellness Retreat" loading="lazy">
             <div class="event-overlay">
               <span class="event-category">Lifestyle Retreat</span>
@@ -2972,7 +3199,7 @@
             </div>
           </div>
 
-          <div class="event-card">
+          <div class="event-card reveal stagger-1">
             <img src="ceo/WhatsApp%20Image%202026-10-09%20at%208.27.10%20PM%20(1).jpeg" alt="Leadership Summit" loading="lazy">
             <div class="event-overlay">
               <span class="event-category">Leadership</span>
@@ -2980,7 +3207,7 @@
             </div>
           </div>
 
-          <div class="event-card">
+          <div class="event-card reveal stagger-2">
             <img src="ceo/WhatsApp%20Image%202026-10-12%20at%207.55.36%20PM.jpeg" alt="Outdoor Community Meet" loading="lazy">
             <div class="event-overlay">
               <span class="event-category">Outdoor Summit</span>
@@ -2988,7 +3215,7 @@
             </div>
           </div>
 
-          <div class="event-card">
+          <div class="event-card reveal stagger-3">
             <img src="ceo/WhatsApp%20Image%202026-10-09%20at%208.27.09%20PM.jpeg" alt="Festive Celebrations" loading="lazy">
             <div class="event-overlay">
               <span class="event-category">Culture & Family</span>
@@ -3004,7 +3231,7 @@
          ========================================================================== -->
     <section>
       <div class="container">
-        <div class="breathe-card">
+        <div class="breathe-card reveal">
           <div class="breathe-content">
             <div class="badge badge-primary" style="background: rgba(16, 185, 129, 0.2); color: #7cf0c0; border-color: rgba(16, 185, 129, 0.4);">
               Mindfulness & Stress Relief
@@ -3032,13 +3259,13 @@
          ========================================================================== -->
     <section id="faq" style="background: var(--bg-subtle);">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header reveal">
           <div class="badge badge-primary">Got Questions?</div>
           <h2 class="section-title">Frequently Asked Questions</h2>
           <p class="section-desc">Clear, honest answers to help you understand how our personalized online coaching and Indian home nutrition work.</p>
         </div>
 
-        <div class="faq-container">
+        <div class="faq-container reveal stagger-1">
           
           <div class="faq-item active">
             <button class="faq-question" onclick="toggleFaq(this)">
@@ -3056,7 +3283,7 @@
               <i data-lucide="chevron-down" class="faq-chevron"></i>
             </button>
             <div class="faq-answer">
-              Yes, 100% online! We coach clients from all over India (Delhi, Mumbai, Bengaluru, Patna, Kolkata, Ranchi, Deoghar, and more) as well as NRI clients in the US, UK, UAE, and Canada. All consultations, diet charts, workout guides, and daily check-ins happen smoothly on WhatsApp.
+              Yes, 100% online! We coach clients from all over India (Delhi, Mumbai, Bengaluru, Patna, Kolkata, Ranchi, and more) as well as NRI clients in the US, UK, UAE, and Canada. All consultations, diet charts, workout guides, and daily check-ins happen smoothly on WhatsApp.
             </div>
           </div>
 
@@ -3109,7 +3336,7 @@
          ========================================================================== -->
     <section id="contact">
       <div class="container">
-        <div class="contact-card">
+        <div class="contact-card reveal">
           <div class="contact-grid">
             
             <!-- Left Info Panel -->
@@ -3166,7 +3393,7 @@
                 </div>
               </div>
 
-              <div style="padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 0.85rem; color: #a7f3d0;">
+              <div style="padding-top: 26px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 0.85rem; color: #a7f3d0;">
                 🔒 Your details are 100% private. Direct message opens directly in WhatsApp without spam.
               </div>
             </div>
@@ -3387,24 +3614,75 @@
     }
 
     // ==========================================================================
+    // INTERSECTION OBSERVER FOR SCROLL ANIMATIONS
+    // ==========================================================================
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          
+          // Trigger counter animation if inside stats strip
+          if (entry.target.classList.contains('stats-strip') || entry.target.closest('.stats-strip')) {
+            startCounters();
+          }
+          obs.unobserve(entry.target);
+        }
+      });
+    }, {
+      root: null,
+      threshold: 0.15,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    revealElements.forEach(el => observer.observe(el));
+
+    // ==========================================================================
+    // STAT COUNTERS ANIMATION
+    // ==========================================================================
+    let countersStarted = false;
+    function startCounters() {
+      if (countersStarted) return;
+      countersStarted = true;
+
+      const counterEls = document.querySelectorAll('[data-counter]');
+      counterEls.forEach(el => {
+        const target = parseFloat(el.dataset.counter);
+        const suffix = el.dataset.suffix || '';
+        const decimals = parseInt(el.dataset.decimals) || 0;
+        const duration = 1800; // ms
+        const startTime = performance.now();
+
+        function updateCount(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          // Easing function (easeOutQuad)
+          const easeProgress = 1 - (1 - progress) * (1 - progress);
+          const currentVal = easeProgress * target;
+
+          el.textContent = currentVal.toFixed(decimals) + suffix;
+
+          if (progress < 1) {
+            requestAnimationFrame(updateCount);
+          } else {
+            el.textContent = target.toFixed(decimals) + suffix;
+          }
+        }
+
+        requestAnimationFrame(updateCount);
+      });
+    }
+
+    // ==========================================================================
     // INTERACTIVE BEFORE/AFTER SLIDER LOGIC
     // ==========================================================================
     const baSlider = document.getElementById('baSlider');
     const baBeforeWrap = document.getElementById('baBeforeWrap');
     const baBeforeImg = document.getElementById('baBeforeImg');
+    const baImgAfter = document.getElementById('baImgAfter');
     const baHandle = document.getElementById('baHandle');
 
     let isSliding = false;
-
-    function syncSliderWidth() {
-      if (baSlider && baBeforeImg) {
-        baBeforeImg.style.width = baSlider.offsetWidth + 'px';
-      }
-    }
-
-    window.addEventListener('resize', syncSliderWidth);
-    window.addEventListener('load', syncSliderWidth);
-    syncSliderWidth();
 
     function setSliderPosition(x) {
       const rect = baSlider.getBoundingClientRect();
@@ -3447,6 +3725,40 @@
       });
     }
 
+    // Switch between Client & Coach Slider Modes
+    function switchSliderMode(mode) {
+      const tabClient = document.getElementById('sliderTabClient');
+      const tabCoach = document.getElementById('sliderTabCoach');
+      const titleText = document.getElementById('sliderTitleText');
+      const subText = document.getElementById('sliderSubText');
+      const labelBefore = document.getElementById('baLabelBefore');
+      const labelAfter = document.getElementById('baLabelAfter');
+
+      if (mode === 'coach') {
+        tabCoach.classList.add('active');
+        tabClient.classList.remove('active');
+        baBeforeImg.src = 'ceo/coach_before.jpg';
+        baImgAfter.src = 'ceo/coach_after.jpg';
+        titleText.textContent = "Coach Vijeta's Personal Transformation";
+        subText.textContent = "Natural fat reduction, toned frame & vibrant daily stamina";
+        labelBefore.textContent = "BEFORE";
+        labelAfter.textContent = "AFTER (FIT COACH)";
+      } else {
+        tabClient.classList.add('active');
+        tabCoach.classList.remove('active');
+        baBeforeImg.src = 'rev/slider_before.jpg';
+        baImgAfter.src = 'rev/slider_after.jpg';
+        titleText.textContent = "Client Saree Recomposition";
+        subText.textContent = "-21 KG Fat Loss in 7 Months with customized home nutrition";
+        labelBefore.textContent = "BEFORE";
+        labelAfter.textContent = "AFTER (-21 KG)";
+      }
+
+      // Reset to 50%
+      baBeforeWrap.style.width = '50%';
+      baHandle.style.left = '50%';
+    }
+
     // ==========================================================================
     // FILTERABLE GALLERY LOGIC
     // ==========================================================================
@@ -3462,6 +3774,7 @@
         reviewCards.forEach(card => {
           if (filter === 'all' || card.dataset.category === filter) {
             card.style.display = 'flex';
+            card.style.animation = 'modalZoom 0.4s ease';
           } else {
             card.style.display = 'none';
           }
